@@ -1,99 +1,49 @@
-![logo](githubcfg/nextram-gh-logo.png)
+# NextRAM Manager 2.0
 
-<div align="center">
-<img src="https://img.shields.io/badge/Android-6.0+-3DDC84?style=flat-square&logo=android" />
-<img src="https://img.shields.io/badge/Linux-3.1+-FCC624?style=flat-square&logo=linux" />
-<img src="https://img.shields.io/badge/Magisk-00B0F0?style=flat-square&logo=android" />
-<img src="https://img.shields.io/badge/License-GPLv3-blue?style=flat-square" />
-</div>
+Нативное приложение-компаньон для Magisk-модуля [NextRAM](https://github.com/LineXin/NextRAM).
+Без WebView, без единой зависимости, интерфейс целиком на Java.
 
-<div align="center">
-<a href="https://t.me/nextram_official">
-<img src="https://img.shields.io/badge/Telegram-blue?style=for-the-badge&logo=telegram&logoColor=white" />
-</a>
-<a href="https://github.com/Rexamm1t/NextRAM/releases">
-<img src="https://img.shields.io/github/downloads/Rexamm1t/NextRAM/total?style=for-the-badge" />
-</a>
-</div>
+## Что умеет
 
-<div align="center">
-  <font size="2">
-    <a href="https://github.com/Rexamm1t/NextRAM/blob/public-main/docs/README_RU.md">Русский</a>
-  </font>
-  <font size="2"> | </font>
-  <font size="2">
-    <a href="https://github.com/Rexamm1t/NextRAM/blob/public-main/README_EN.md">English</a>
-  </font>
-  <font size="2"> | </font>
-  <font size="2">
-    <a href="https://github.com/Rexamm1t/NextRAM/blob/public-main/docs/README_UK.md">Українська</a>
-  </font>
-  <font size="2"> | </font>
-  <font size="2">
-    <a href="https://github.com/Rexamm1t/NextRAM/blob/public-main/docs/README_ZH.md">中文</a>
-  </font>
-  <font size="2"> | </font>
-  <font size="2">
-    <a href="https://github.com/Rexamm1t/NextRAM/blob/public-main/docs/README_DE.md">Deutsch</a>
-  </font>
-</div>
+- Живой индикатор занятой памяти (обновление каждые 2 секунды), кэш, swap и ZRAM из `/proc/meminfo` и `/proc/swaps`.
+- Читает и правит `/data/adb/modules/NextRAM/config.conf`: переключатели, слайдеры, выбор алгоритма ZRAM.
+- Кнопка «Применить» записывает конфиг и запускает `service.sh` модуля.
+- Сброс кэша страниц (`drop_caches`) и просмотр логов модуля.
+- Корректно работает без root: показывает память и честно пишет, что модуль недоступен.
 
-# NextRAM - Advanced Memory Management Module
+## Сборка
 
-## Description
+### Вариант 1: GitHub Actions (APK без компьютера)
 
-NextRAM is a powerful Magisk module for advanced memory management on Android devices. The module provides enhanced zram and swap file capabilities along with fine-tuned memory parameters for performance optimization.
+1. Загрузите папку проекта в репозиторий на GitHub (можно прямо с телефона через веб-интерфейс или приложение GitHub).
+2. Откройте вкладку **Actions** → workflow **Build APK** → **Run workflow**.
+3. Через 2–4 минуты в разделе артефактов появится `NextRAM-Manager-apk.zip` с `app-debug.apk`.
 
-## Key Features
+### Вариант 2: AndroidIDE на телефоне
 
-### Memory Management
-- **ZRAM**: Compressed RAM configuration with algorithm selection
-- **Swap Files**: Creation and management of swap files
-- **Auto-tuning**: Intelligent memory parameter optimization
-- **Dynamic Swappiness**: Adaptive swap management
+Открыть папку проекта как Gradle-проект, дождаться синхронизации, `Build` → `Assemble debug`.
 
-### System Monitoring
-- **Detailed Statistics**: Comprehensive memory, CPU, and battery information
-- **EMMC Health**: Internal storage health monitoring
-- **Logging**: Complete module operation logging
-- **System Information**: Device and system data collection
+### Вариант 3: Android Studio
 
-### Optimization
-- **Kernel Settings**: Optimization of vm.swappiness, cache_pressure, dirty_ratio
-- **Performance**: Improved system responsiveness
-- **Power Efficiency**: Balance between performance and battery consumption
+`File → Open` → выбрать папку проекта → Run.
 
-## Installation
+## Структура
 
-1. Install the module via Magisk Manager/Other Root Manager
-2. Reboot your device
-3. Configure parameters in NextRAM App or `config.conf` file
+```
+app/src/main/java/com/nextram/manager/
+  MainActivity.java   — весь интерфейс и логика
+  Gauge.java          — индикатор памяти на Canvas
+  Shell.java          — запуск команд через su
+```
 
-## Module Management
+## Требования к устройству
 
-- Use NextRAM Manager app for graphical control
-- Edit /data/adb/modules/nextram/config.conf for manual configuration
-- View logs in /data/adb/modules/nextram/logs/
+- Android 7.0+ (minSdk 24), root через Magisk или KernelSU.
+- Модуль NextRAM, установленный в `/data/adb/modules/NextRAM`.
 
-## Compatibility
+## Примечание
 
-- Android 7.0 and higher
-- Magisk and KernelSU support
-- ARM, ARM64, x86, x86_64 architectures
-- Root access required
+Пакет `com.nextram.manager` совпадает с текущим приложением в репозитории, поэтому новая версия
+установится поверх старой. Если подпись не совпадёт — сначала удалите старое приложение.
 
-## Security
-
-The module operates at kernel level with minimal permissions. All changes are reversible and don't affect system integrity.
-
-## Support
-
-- Telegram channel: @nextram_official
-
-## License
-
-Module is distributed under GPL v3 license. Source code is available in project repository.
-
----
-
-Note: Use the module with caution. Incorrect configuration may affect system stability.
+Подпись здесь отладочная (`signingConfig signingConfigs.debug`), для публикации замените на свою.
